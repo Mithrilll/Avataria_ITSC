@@ -44,3 +44,15 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: face
+    uniqueID: 2803923775
+    locked: 0
+  - name: shirt
+    uniqueID: 4168198509
+    locked: 0
+  - name: accessory
+    uniqueID: 2113386263
+    locked: 0
+  - name: UI
+    uniqueID: 564453349
+    locked: 0
