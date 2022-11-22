@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -20,7 +21,8 @@ public class Save : MonoBehaviour
 
     public void SaveAvatar()
     {
-        string path = Path.Combine(Application.streamingAssetsPath, "temp.txt");
+        string path = Path.Combine(Application.streamingAssetsPath, DateTime.Now.ToString("dd.MM.yyyy.hh.mm.ss") + ".txt");
+        Debug.Log(path);
         FileInfo fi1 = new FileInfo(path);
 
         if (!fi1.Exists)
