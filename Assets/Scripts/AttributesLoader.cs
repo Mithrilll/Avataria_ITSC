@@ -1,90 +1,29 @@
 using System.Collections;
-using System.Collections.Generic;
-using System.Runtime.InteropServices;
+using System.IO;
 using UnityEngine;
 using UnityEngine.TextCore.Text;
+using TMPro;
 
 public class AttributesLoader : MonoBehaviour
 {
     [SerializeField]
+    private Transform parent;
+
+    [SerializeField]
     private GameObject avatar;
 
     [SerializeField]
+    private int numberOfFaceTypes;
+
+    private GameObject[][] beards;
+    private GameObject[][] eyes;
+    private GameObject[][] eyebrows;
     private GameObject[] faces;
-
-    [SerializeField]
-    private GameObject[] haircuts0;
-    [SerializeField]
-    private GameObject[] haircuts1;
-    //[SerializeField]
-    //private GameObject[] haircuts2;
-    //[SerializeField]
-    //private GameObject[] haircuts3;
-
-    [SerializeField]
-    private GameObject[] brows0;
-    [SerializeField]
-    private GameObject[] brows1;
-    //[SerializeField]
-    //private GameObject[] brows2;
-    //[SerializeField]
-    //private GameObject[] brows3;
-
-    [SerializeField]
-    private GameObject[] eyes0;
-    [SerializeField]
-    private GameObject[] eyes1;
-    //[SerializeField]
-    //private GameObject[] eyes2;
-    //[SerializeField]
-    //private GameObject[] eyes3;
-
-    [SerializeField]
-    private GameObject[] noses0;
-    [SerializeField]
-    private GameObject[] noses1;
-    //[SerializeField]
-    //private GameObject[] noses2;
-    //[SerializeField]
-    //private GameObject[] noses3;
-
-    [SerializeField]
-    private GameObject[] mouses0;
-    [SerializeField]
-    private GameObject[] mouses1;
-    //[SerializeField]
-    //private GameObject[] mouses2;
-    //[SerializeField]
-    //private GameObject[] mouses3;
-
-    [SerializeField]
-    private GameObject[] beards0;
-    [SerializeField]
-    private GameObject[] beards1;
-    //[SerializeField]
-    //private GameObject[] beards2;
-    //[SerializeField]
-    //private GameObject[] beards3;
-
-    [SerializeField]
-    private GameObject[] accessories0;
-    [SerializeField]
-    private GameObject[] accessories1;
-    //[SerializeField]
-    //private GameObject[] accessories2;
-    //[SerializeField]
-    //private GameObject[] accessories3;
-
-    [SerializeField]
+    private GameObject[][] haircuts;
+    private GameObject[][] mouthes;
+    private GameObject[][] noses;
     private GameObject[] shirts;
-
-    private GameObject[][] haircuts = new GameObject[2][];
-    private GameObject[][] brows = new GameObject[2][];
-    private GameObject[][] eyes = new GameObject[2][];
-    private GameObject[][] noses = new GameObject[2][];
-    private GameObject[][] mouses = new GameObject[2][];
-    private GameObject[][] beards = new GameObject[2][];
-    private GameObject[][] accessories = new GameObject[2][];
+    private GameObject[][] accessories;
 
     private AvatarSettings avatarSettings;
 
@@ -92,45 +31,41 @@ public class AttributesLoader : MonoBehaviour
     {
         avatarSettings = avatar.GetComponent<AvatarSettings>();
 
-        haircuts[0] = haircuts0;
-        haircuts[1] = haircuts1;
-        //haircuts[2] = haircuts2;
-        //haircuts[3] = haircuts3;
+        beards = new GameObject[numberOfFaceTypes][];
+        for (int i = 0; i < numberOfFaceTypes; i++)
+            beards[i] = LoadPerefabs("Beard", i);
 
-        brows[0] = brows0;
-        brows[1] = brows1;
-        //brows[2] = brows2;
-        //brows[3] = brows3;
+        eyes = new GameObject[numberOfFaceTypes][];
+        for (int i = 0; i < numberOfFaceTypes; i++)
+            eyes[i] = LoadPerefabs("Eye", i);
 
-        eyes[0] = eyes0;
-        eyes[1] = eyes1;
-        //eyes[2] = eyes2;
-        //eyes[3] = eyes3;
+        eyebrows = new GameObject[numberOfFaceTypes][];
+        for (int i = 0; i < numberOfFaceTypes; i++)
+            eyebrows[i] = LoadPerefabs("Eyebrow", i);
 
-        noses[0] = noses0;
-        noses[1] = noses1;
-        //noses[2] = noses2;
-        //noses[3] = noses3;
+        faces = LoadPerefabs("Face");
 
-        mouses[0] = mouses0;
-        mouses[1] = mouses1;
-        //mouses[2] = mouses2;
-        //mouses[3] = mouses3;
+        haircuts = new GameObject[numberOfFaceTypes][];
+        for (int i = 0; i < numberOfFaceTypes; i++)
+            haircuts[i] = LoadPerefabs("Haircut", i);
 
-        beards[0] = beards0;
-        beards[1] = beards1;
-        //beards[2] = beards2;
-        //beards[3] = beards3;
+        mouthes = new GameObject[numberOfFaceTypes][];
+        for (int i = 0; i < numberOfFaceTypes; i++)
+            mouthes[i] = LoadPerefabs("Mouth", i);
 
-        accessories[0] = accessories0;
-        accessories[1] = accessories1;
-        //accessories[2] = accessories2;
-        //accessories[3] = accessories3;
+        noses = new GameObject[numberOfFaceTypes][];
+        for (int i = 0; i < numberOfFaceTypes; i++)
+            noses[i] = LoadPerefabs("Nose", i);
+
+        shirts = LoadPerefabs("Shirt");
+
+        accessories = new GameObject[numberOfFaceTypes][];
+        for (int i = 0; i < numberOfFaceTypes; i++)
+            accessories[i] = LoadPerefabs("Accessory", i);
 
         DisableAllAttributes();
 
-        foreach (GameObject i in faces)
-            i.SetActive(true);
+        LoadAttribute(0);
     }
 
     public void LoadAttribute(int index)
@@ -140,80 +75,121 @@ public class AttributesLoader : MonoBehaviour
         switch (index)
         {
             case 0:
-                foreach (GameObject i in faces)
-                    i.SetActive(true);
+                for (int i = 0; i < faces.Length; i++)
+                    if (faces[i] != null)
+                        faces[i].SetActive(true);
                 break;
             case 1:
-                foreach (GameObject i in haircuts[avatarSettings.FaceType])
-                    i.SetActive(true);
+                for (int i = 0; i < haircuts[avatarSettings.FaceType].Length; i++)
+                    if (haircuts[avatarSettings.FaceType][i] != null)
+                        haircuts[avatarSettings.FaceType][i].SetActive(true);
                 break;
             case 2:
-                foreach (GameObject i in brows[avatarSettings.FaceType])
-                    i.SetActive(true);
+                for (int i = 0; i < eyebrows[avatarSettings.FaceType].Length; i++)
+                    if (eyebrows[avatarSettings.FaceType][i] != null)
+                        eyebrows[avatarSettings.FaceType][i].SetActive(true);
                 break;
             case 3:
-                foreach (GameObject i in eyes[avatarSettings.FaceType])
-                    i.SetActive(true);
+                for (int i = 0; i < eyes[avatarSettings.FaceType].Length; i++)
+                    if (eyes[avatarSettings.FaceType][i] != null)
+                        eyes[avatarSettings.FaceType][i].SetActive(true);
                 break;
             case 4:
-                foreach (GameObject i in noses[avatarSettings.FaceType])
-                    i.SetActive(true);
+                for (int i = 0; i < noses[avatarSettings.FaceType].Length; i++)
+                    if (noses[avatarSettings.FaceType][i] != null)
+                        noses[avatarSettings.FaceType][i].SetActive(true);
                 break;
             case 5:
-                foreach (GameObject i in mouses[avatarSettings.FaceType])
-                    i.SetActive(true);
+                for (int i = 0; i < mouthes[avatarSettings.FaceType].Length; i++)
+                    if (mouthes[avatarSettings.FaceType][i] != null)
+                        mouthes[avatarSettings.FaceType][i].SetActive(true);
                 break;
             case 6:
-                foreach (GameObject i in beards[avatarSettings.FaceType])
-                    i.SetActive(true);
+                for (int i = 0; i < beards[avatarSettings.FaceType].Length; i++)
+                    if (beards[avatarSettings.FaceType][i] != null)
+                        beards[avatarSettings.FaceType][i].SetActive(true);
                 break;
             case 7:
-                foreach (GameObject i in shirts)
-                    i.SetActive(true);
+                for (int i = 0; i < shirts.Length; i++)
+                    if (shirts[i] != null)
+                        shirts[i].SetActive(true);
                 break;
             case 8:
-                foreach (GameObject i in accessories[avatarSettings.FaceType])
-                    i.SetActive(true);
+                for (int i = 0; i < accessories[avatarSettings.FaceType].Length; i++)
+                    if (accessories[avatarSettings.FaceType][i] != null)
+                        accessories[avatarSettings.FaceType][i].SetActive(true);
                 break;
             default:
                 break;
         }
     }
 
+    private GameObject[] LoadPerefabs(string prefabFoldername, int faceType = 0)
+    {
+        string prefabsFolderPath = "Prefabs/" + prefabFoldername + "/";
+        int numberOfPrefabs = 1000;
+
+        string[] filenames = new string[numberOfPrefabs];
+        GameObject[] prefabs = new GameObject[numberOfPrefabs];
+        for (int i = 0; i < numberOfPrefabs; i++)
+            filenames[i] = faceType + "_" + i;
+
+        for (int i = 0; i < numberOfPrefabs; i++)
+        {
+            if (Resources.Load<GameObject>(prefabsFolderPath + filenames[i]))
+            {
+                prefabs[i] = Instantiate(Resources.Load<GameObject>(prefabsFolderPath + filenames[i]), parent);
+                prefabs[i].GetComponent<ShopButtonHandler>().avatarSettings = avatarSettings;
+                prefabs[i].GetComponent<ShopButtonHandler>().number = i;
+            }
+        }
+
+        return prefabs;
+    }
+
     private void DisableAllAttributes()
     {
-        foreach (GameObject i in faces)
-            i.SetActive(false);
+        for (int i = 0; i < haircuts.Length; i++)
+            for (int j = 0; j < haircuts[i].Length; j++)
+                if(haircuts[i][j] != null)
+                    haircuts[i][j].SetActive(false);
 
-        for (int i = 0; i < 2; i++)
-            foreach (GameObject j in haircuts[i])
-                j.SetActive(false);
+        for (int i = 0; i < eyebrows.Length; i++)
+            for (int j = 0; j < eyebrows[i].Length; j++)
+                if (eyebrows[i][j] != null)
+                    eyebrows[i][j].SetActive(false);
 
-        for (int i = 0; i < 2; i++)
-            foreach (GameObject j in brows[i])
-                j.SetActive(false);
+        for (int i = 0; i < eyes.Length; i++)
+            for (int j = 0; j < eyes[i].Length; j++)
+                if (eyes[i][j] != null)
+                    eyes[i][j].SetActive(false);
 
-        for (int i = 0; i < 2; i++)
-            foreach (GameObject j in eyes[i])
-                j.SetActive(false);
+        for(int i = 0; i < noses.Length; i++)
+            for (int j = 0; j < noses[i].Length; j++)
+                if (noses[i][j] != null)
+                    noses[i][j].SetActive(false);
 
-        for (int i = 0; i < 2; i++)
-            foreach (GameObject j in noses[i])
-                j.SetActive(false);
+        for (int i = 0; i < mouthes.Length; i++)
+            for (int j = 0; j < mouthes[i].Length; j++)
+                if (mouthes[i][j] != null)
+                    mouthes[i][j].SetActive(false);
 
-        for (int i = 0; i < 2; i++)
-            foreach (GameObject j in mouses[i])
-                j.SetActive(false);
+        for (int i = 0; i < beards.Length; i++)
+            for (int j = 0; j < beards[i].Length; j++)
+                if (beards[i][j] != null)
+                    beards[i][j].SetActive(false);
 
-        for (int i = 0; i < 2; i++)
-            foreach (GameObject j in beards[i])
-                j.SetActive(false);
+        for (int i = 0; i < accessories.Length; i++)
+            for (int j = 0; j < accessories[i].Length; j++)
+                if (accessories[i][j] != null)
+                    accessories[i][j].SetActive(false);
 
-        foreach (GameObject i in shirts)
-            i.SetActive(false);
-        ;
-        for (int i = 0; i < 2; i++)
-            foreach (GameObject j in accessories[i])
-                j.SetActive(false);
+        for (int i = 0; i < faces.Length; i++)
+            if (faces[i] != null)
+                faces[i].SetActive(false);
+
+        for (int i = 0; i < shirts.Length; i++)
+            if (shirts[i] != null)
+                shirts[i].SetActive(false);
     }
 }
