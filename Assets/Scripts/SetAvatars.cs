@@ -31,7 +31,7 @@ public class SetAvatars : MonoBehaviour
             int i_pt = 0;
             foreach(var pt in path_fo_obj){
                 TextMeshProUGUI name_text = plyinfo.transform.Find(pt).GetComponent<TextMeshProUGUI>();
-                name_text.text = name_text.text+" "+st[i_pt];
+                name_text.text = st[i_pt];
                 i_pt++;
             }
             AvatarSettings avatarSettings = plyinfo.transform.Find("Avatar").GetComponent<AvatarSettings>();
