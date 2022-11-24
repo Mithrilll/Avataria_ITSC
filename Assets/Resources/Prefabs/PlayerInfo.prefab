@@ -826,7 +826,7 @@ MonoBehaviour:
   haircut: {fileID: 6288654089328815232}
   shirt: {fileID: 6288654089407076250}
   accessory: {fileID: 6288654089105333846}
-  numberOfFaceTypes: 1
+  numberOfFaceTypes: 3
 --- !u!1 &6288654089086720929
 GameObject:
   m_ObjectHideFlags: 0
