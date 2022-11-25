@@ -22,6 +22,7 @@ public class SetAvatars : MonoBehaviour
         "Dima_Glazunov.txt",
         "Aleksei_Pilipenko.txt",
         "Gleb_Makhrin.txt",
+        "Alexandr_Rybalov.txt"
     };
     void Start(){
         string [] count_avatars = Directory.GetFiles(Application.streamingAssetsPath, "*.txt");
